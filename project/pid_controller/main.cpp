@@ -217,10 +217,57 @@ int main ()
   PID pid_steer = PID();
   PID pid_throttle = PID();
 
-  // initialize pid steer limit to [-1.2, 1.2]
-  pid_steer.Init(0.9, 0.1, 0.01, 1.2, -1.2);
-  // initialize pid throttle limit to [-1, 1]
-  pid_throttle.Init(0.3, 0, 0, 1.0, -1.0);
+  /**********************************************
+    * limit steer to [-1.2, 1.2]
+    * limit throttle to [-1.0, 1.0]
+    * testing multiple iterations of PID
+   **********************************************/
+
+  // TEST 1 (collision)
+  // pid_steer.Init(0.4, 0, 0, 1.2, -1.2);
+  // pid_throttle.Init(0.3, 0, 0, 1.0, -1.0);
+  // collision with first vehicle, doesn't seem to steer much
+
+  // TEST 2 (collision)
+  // pid_steer.Init(0.7, 0, 0, 1.2, -1.2);
+  // pid_throttle.Init(0.3, 0, 0, 1.0, -1.0);
+  // more steering control out of lane to avoid car
+
+  // TEST 3 (collision)
+  // pid_steer.Init(0.7, 0.01, 0, 1.2, -1.2);
+  // pid_throttle.Init(0.3, 0, 0, 1.0, -1.0);
+  // no apparant change to steering output
+
+  // TEST 4 (collision)
+  // pid_steer.Init(0.7, 0.1, 0, 1.2, -1.2);
+  // pid_throttle.Init(0.3, 0, 0, 1.0, -1.0);
+
+  // TEST 5 (collision)
+  // pid_steer.Init(0.7, 0.001, 0.1, 1.2, -1.2);
+  // pid_throttle.Init(0.3, 0, 0, 1.0, -1.0);
+
+  // TEST 6 (collision)
+  // pid_steer.Init(0.7, 0.1, 0.1, 1.2, -1.2);
+  // pid_throttle.Init(0.3, 0, 0, 1.0, -1.0);
+
+  // TEST 7 (collision)
+  // pid_steer.Init(0.7, 0.001, 0.1, 1.2, -1.2);
+  // pid_throttle.Init(0.6, 0, 0, 1.0, -1.0);
+
+  // TEST 8 (colllision)
+  // pid_steer.Init(0.7, 0.001, 0.1, 1.2, -1.2);
+  // pid_throttle.Init(0.3, 0.1, 0, 1.0, -1.0);
+  // erratic throttle
+
+  // TEST 9 (BEST, collision)
+  pid_steer.Init(0.7, 0.001, 0.1, 1.2, -1.2);
+  pid_throttle.Init(0.3, 0, 0.1, 1.0, -1.0);
+  // smoothest throttle
+
+  // TEST 10
+  // pid_steer.Init(0.4, 0.001, 0.1, 1.2, -1.2);
+  // pid_throttle.Init(0.3, 0, 0.1, 1.0, -1.0);
+  // erratic throttle, although no change only to steering
 
   h.onMessage([&pid_steer, &pid_throttle, &new_delta_time, &timer, &prev_timer, &i, &prev_timer](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
   {
